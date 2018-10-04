@@ -56,7 +56,7 @@
 
             //TRATAR DADOS ENVIADOS PARA A PÁGINA
             if($_POST["titulo"] != ""){
-                $sql = "INSERT INTO `tickets`(`titulo`,`status`) VALUES ('".$_POST["titulo"]."',0)";
+                $sql = "INSERT INTO `tickets`(`titulo`,`status`) VALUES ('".utf8_encode($_POST["titulo"])."',0)";
                 if($conn->query($sql)===TRUE){
                     echo"Ticket Adicionado!";
                 }else{
@@ -88,7 +88,7 @@
                 while($row = $result ->fetch_assoc()){
                     echo"<tr>";
                     echo"<td>" . $row["id"]."</td>";
-                    echo"<td>" . $row["titulo"]."</td>";
+                    echo"<td>" . utf8_decode($row["titulo"])."</td>";
                     echo"<td>"; 
                     if($row["status"] == 0){
                         echo"Aberto";
