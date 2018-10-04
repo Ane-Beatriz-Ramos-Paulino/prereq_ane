@@ -6,7 +6,7 @@
                 <title>Tikets</title>
                 <style>
                         table,td,th{
-                            border: 1px, solid black;
+                            border: 1px solid black;
                             border-collapse:collapse;
                         }
 
@@ -32,6 +32,15 @@
 <h1>Tikets</h1>
 
 <p>Gerenciador de tickets</p>
+
+   <!-- FORMULÁRIO DE CADASTRO -->
+
+    <form action = "index.php" method="post">
+            <label>Problema</label>
+            <input type = "text" name= "titulo"/>
+            <input type = "submit"  name = "botao_adicionar" value = "Adicionar"/>
+    </form>
+
     <?php
         $servidor = "ambiente_db_1";
         $usuario = "root";
@@ -45,8 +54,28 @@
 
         }
 
+            //TRATAR DADOS ENVIADOS PARA A PÁGINA
+            if($_POST["titulo"] != ""){
+                $sql = "INSERT INTO `tickets`(`titulo`,`status`) VALUES ('".$_POST["titulo"]."',0)";
+                if($conn->query($sql)===TRUE){
+                    echo"Ticket Adicionado!";
+                }else{
+                    echo"ocorreu um erro: " .$sql. "<br/>".$conn->error;
+                }
+
+            }
+
+            // Recuperar todos os registros da tabela tickets
+            $sql = "SELECT * FROM tickets";
+            $result = $conn->query($sql);
+
     ?>
-        <table>
+              
+            <?php
+                if($result->num_rows > 0){
+                
+            ?>
+            <table>
 
             <tr>
                 <th>ID</th>
@@ -54,25 +83,30 @@
                 <th>Status</th>
             </tr>            
 
-            <tr>
-                <td>1</td>  
-                <td>Criar novo usuário </td>     
-                <td> Aberto</td>
-            </tr>
+            <?php    
 
+                while($row = $result ->fetch_assoc()){
+                    echo"<tr>";
+                    echo"<td>" . $row["id"]."</td>";
+                    echo"<td>" . $row["titulo"]."</td>";
+                    echo"<td>"; 
+                    if($row["status"] == 0){
+                        echo"Aberto";
+                    }else{
+                        echo "Fechado";
+                    }
+                    echo"</td>";
+                    echo "</tr>";
+                }
+            ?>    
+                </table>
+            <?php    
+                }else{
+                        echo"Nenhum Registro.";
+                }
 
-            <tr> 
-                <td>2</td>  
-                <td>Analisar fatura </td>         
-                <td> Aberto</td>
-            </tr>
-
-            <tr>
-                <td>3</td>   
-                <td>Criar novo usuário de acesso </td>    
-                <td> Aberto</td>
-            </tr>
-        </table>
+                $conn->close();
+            ?>
     </body>
 </html>   
 
